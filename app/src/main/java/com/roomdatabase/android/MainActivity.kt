@@ -21,36 +21,27 @@ import com.roomdatabase.android.ui.theme.RoomDatabaseTheme
 
 class MainActivity : ComponentActivity() {
 
-    // Initialize DB : We should use Dagger for this, this is not the most optimal way
     private val db by lazy {
         Room.databaseBuilder(
-            applicationContext,  // Context
-            ContactDatabase::class.java,  // Files for database
-            "contacts.db"  // Name of the database
+            applicationContext,
+            ContactDatabase::class.java,
+            "contacts.db"
         ).build()
     }
 
-    private val viewModel by viewModels<ContactViewModel> {
-        // Factory is exact necessary
-        viewModelFactory {
-            object :ViewModelProvider.Factory{
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ContactViewModel(db.dao) as T
-                }
-            }
-        }
+    private val viewModel: ContactViewModel by viewModels {
+        ContactViewModel.provideFactory(db.dao)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RoomDatabaseTheme {
-
-                val state by viewModel.state.collectAsState()  // To collect state and observe that
-
+                val state by viewModel.state.collectAsState()
                 ContactScreen(state = state, onEvent = viewModel::onEvent)
             }
         }
     }
 }
+
 
