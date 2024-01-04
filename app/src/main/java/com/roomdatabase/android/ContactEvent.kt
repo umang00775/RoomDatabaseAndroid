@@ -14,5 +14,5 @@ sealed interface ContactEvent{
     object HideDialog: ContactEvent // Event --> Hide the dialog
 
     data class SortContacts(val sortType: SortType): ContactEvent // To short the contacts
-    data class deleteContact(val contact: Contact): ContactEvent
+    data class DeleteContact(val contact: Contact): ContactEvent
 }
